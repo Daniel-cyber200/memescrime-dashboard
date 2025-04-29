@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+<meta name="theme-color" content="#121212">
+<meta name="mobile-web-app-capable" content="yes">
+  <title>SolWatch - Solana Rug-Pull Detector</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="material-icons">security</span>
+      <h1>SOL<span>WATCH</span></h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#" class="tab-links active-link" onclick="opentab('dashboard', event)">Dashboard</a></li>
+        <li><a href="#" class="tab-links" onclick="opentab('scanner', event)">Token Scanner</a></li>
+        <li><a href="#" class="tab-links" onclick="opentab('threatmap', event)">Threat Map</a></li>
+        <li><a href="#" class="tab-links" onclick="opentab('analytics', event)">Analytics</a></li>
+      </ul>
+      <div class="wallet-container">
+        <button id="connectWallet" class="wallet-btn">
+          <span class="material-icons">account_balance_wallet</span>
+          <span id="walletText">Connect Wallet</span>
+        </button>
+        <div id="walletStatus" class="wallet-status">
+          <span class="status-dot"></span>
+          <span id="walletAddress"></span>
+          <span class="material-icons" id="walletDisconnect">logout</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Dashboard Tab -->
+    <div id="dashboard" class="tab-contents active-tab">
+      <div class="main">
+        <h2><span class="material-icons">insights</span> Memecoin Risk Dashboard</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>High Risk Tokens</h3>
+            <div class="stat-value" id="highRiskCount">0</div>
+            <div class="stat-desc">Last 24 hours</div>
+          </div>
+          <div class="stat-card">
+            <h3>New Launches</h3>
+            <div class="stat-value" id="newLaunches">0</div>
+            <div class="stat-desc">Today</div>
+          </div>
+          <div class="stat-card">
+            <h3>Rug-Pulls</h3>
+            <div class="stat-value" id="rugPulls">0</div>
+            <div class="stat-desc">This week</div>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <canvas id="riskChart"></canvas>
+        </div>
+        
+        <h3>Recent High-Risk Tokens</h3>
+        <div class="token-table" id="riskTokensTable">
+          <!-- Filled by JavaScript -->
+        </div>
+      </div>
+      
+      <div class="right-panel">
+        <h2><span class="material-icons">warning</span> Alerts</h2>
+        <div class="alerts-container" id="alertsContainer">
+          <!-- Alerts will appear here -->
+        </div>
+        
+        <h2><span class="material-icons">search</span> Quick Scan</h2>
+        <div class="quick-scan">
+          <input type="text" id="quickScanInput" placeholder="Enter token address">
+          <button onclick="quickScanToken()">Scan</button>
+          <div id="quickScanResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Token Scanner Tab -->
+    <div id="scanner" class="tab-contents">
+      <div class="main">
+        <h2><span class="material-icons">scanner</span> Token Scanner</h2>
+        <div class="scanner-controls">
+          <input type="text" id="tokenAddressInput" placeholder="Enter Solana token address">
+          <button onclick="scanToken()">Full Analysis</button>
+          <select id="scanDepth">
+            <option value="quick">Quick Scan</option>
+            <option value="full" selected>Full Analysis</option>
+            <option value="deep">Deep Dive</option>
+          </select>
+        </div>
+        
+        <div class="scan-results">
+          <div class="result-card">
+            <h3>Token Info</h3>
+            <div id="tokenInfo"></div>
+          </div>
+          
+          <div class="result-card">
+            <h3>Risk Assessment</h3>
+            <div id="riskAssessment"></div>
+          </div>
+          
+          <div class="result-card">
+            <h3>Holder Distribution</h3>
+            <canvas id="holderChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Threat Map Tab -->
+    <div id="threatmap" class="tab-contents">
+      <div class="main">
+        <h2><span class="material-icons">map</span> Threat Map</h2>
+        <div class="map-container">
+          <div id="networkGraph"></div>
+          <div class="map-sidebar">
+            <div class="heatmap-container">
+              <h3>Holder Concentration</h3>
+              <canvas id="concentrationHeatmap"></canvas>
+            </div>
+            <div class="alerts-container">
+              <h3>Live Alerts</h3>
+              <div id="liveAlerts"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analytics" class="tab-contents">
+      <div class="main">
+        <h2><span class="material-icons">analytics</span> Analytics</h2>
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <h3>Rug-Pull Frequency</h3>
+            <canvas id="rugFrequencyChart"></canvas>
+          </div>
+          <div class="analytics-card">
+            <h3>Top Launchpads</h3>
+            <canvas id="launchpadChart"></canvas>
+          </div>
+          <div class="analytics-card">
+            <h3>Common Patterns</h3>
+            <div id="patternsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
