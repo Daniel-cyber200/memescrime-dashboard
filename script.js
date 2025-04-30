@@ -400,12 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initCharts();
   initNetworkGraph();
 
-  new Chart(ctx, {
-    options: {
-      responsive: true,
-      maintainAspectRatio: false
-    }
-  });
+  // new Chart(ctx, {
+  //   options: {
+  //     responsive: true,
+  //     maintainAspectRatio: false
+  //   }
+  // });
   
   // Add sample alerts
   addAlert('New high-risk token detected: RUGPULL (9aM...7hJ)', 'danger');
