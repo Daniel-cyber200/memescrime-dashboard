@@ -142,7 +142,7 @@ nav ul li a:hover {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
-  padding: 30px;
+  padding: 20px;
   min-height: calc(100vh - 80px);
 }
 
@@ -210,6 +210,14 @@ nav ul li a:hover {
   border-radius: 8px;
   margin-bottom: 20px;
   height: 300px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-container canvas{
+  max-width: 100%;
+  height: auto !important;
 }
 
 .token-table {
@@ -387,7 +395,7 @@ nav ul li a:hover {
 
 .analytics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
 
@@ -396,6 +404,13 @@ nav ul li a:hover {
   padding: 15px;
   border-radius: 8px;
   height: 300px;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+#launchpadChart{
+  max-height: 250px;
+  margin: auto 0;
 }
 
 .risk-score {
@@ -491,15 +506,22 @@ nav ul li a:hover {
   .scan-results {
     grid-template-columns: 1fr;
   }
-  
-  .container {
-    padding: 15px;
-  }
 }
 
 @media (max-width: 768px) {
   .risk-summary{
     flex-direction: column;
+  }
+  .container {
+    padding: 15px;
+  }
+
+  .stats-grid, .scan-results{
+    gap: 10px;
+  }
+
+  .stat-card, .result-card{
+    padding: 12px;
   }
 }
 
